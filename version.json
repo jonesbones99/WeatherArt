@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "files": [
+    "main.py",
+    "boot.py",
+    "Server.py",
+    "OTA/boot.py",
+    "OTA/OTAService.py",
+    "Weather/Lightning.py",
+    "version.json"
+  ],
+  "checksums": {
+    "main.py": "",
+    "Server.py": "",
+    "OTA/boot.py": "",
+    "OTA/OTAService.py": ""
+  }
+}
