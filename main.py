@@ -44,7 +44,22 @@ def mark_healthy_boot():
         print("[HEALTH CHECK] Boot crash counter reset to 0.")
     except Exception as e:
         print("[HEALTH CHECK] Failed to reset crash counter:", e)
+def check_crash_count():
+    """Returns the current crash count from crash_count.txt"""
+    try:
+        with open("crash_count.txt", "r") as f:
+            return int(f.read().strip())
+    except Exception:
+        return 0
+
 def run_github_ota():
+    # Check if device has crashed 3+ times - if so, skip update to avoid update loop
+    crash_count = check_crash_count()
+    if crash_count >= 3:
+        print(f"[OTA] WARNING: Crash count is {crash_count}. Skipping update to prevent update loop.")
+        print("[OTA] Device will use rolled-back version. Manual intervention may be needed.")
+        return
+    
     print(f"[OTA] Initializing GitHub OTA for '{GITHUB_REPO}'...")
     updater = GitHubOTAUpdater(
         github_repo=GITHUB_REPO,
