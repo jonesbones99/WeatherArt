@@ -10,6 +10,7 @@ NumLED    = 30 # The number of LEDs in the light strip
 NeoLights = neopixel.NeoPixel(machine.Pin(DataPin), NumLED)
 Lighting  = WeatherLighting(30, "Victoria BC", 30)
 PrevArray = []
+ToggleStatus = True
 
 def set_brightness(color, brightness):
   r, g, b = color
@@ -56,11 +57,25 @@ def run_github_ota():
             updater.apply_update(manifest)
         except Exception as e:
             print("[OTA ERROR] Failed to apply update from GitHub:", e)
-
+def set_LEDS_To_Updating(self):
+    green = (0,255,0)
+    global ToggleStatus
+    if(ToggleStatus):
+        for i in range(NumLED):
+            NeoLights[i] = green
+    else:
+        for i in range(NumLED):
+            NeoLights[i] = (0,0,0)
+    NeoLights.write()
+    ToggleStatus = not ToggleStatus
+  
 def main():
     print("==================================================")
     print(" Pico W IoT Application (v1.0.0)")
     print("==================================================")
+    StatusTimer    = Timer()
+    StatusTimer.init(mode=Timer.PERIODIC, callback=set_LEDS_To_Updating, period=500)
+
     # Instantiate Server class to load config.txt and connect to Wi-Fi
     server = Server(config_file="config.txt")
     if server.connect():
@@ -72,6 +87,7 @@ def main():
     # Main Application Work Loop
     print("[APP] Main loop active...")
     counter = 0
+    StatusTimer.deinit()
     while True:
       loop()
       time.sleep(0.1)
