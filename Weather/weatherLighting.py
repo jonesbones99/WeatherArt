@@ -29,7 +29,7 @@ class WeatherLighting:
   
   def UpdateWeather(self):
     global WeatherService, CurrentWeather
-    CurrentWeather = Weather.LIGHTNING
+    CurrentWeather = Weather.HOT
     print("UPDATING WEATHER")
     return
 
