@@ -68,7 +68,7 @@ def main():
     # Wait 10 seconds of stable runtime before clearing crash counter
     time.sleep(10)
     mark_healthy_boot()
-    sensor = TemperatureSensor() if sensor_available else None
+  
     # Main Application Work Loop
     print("[APP] Main loop active...")
     counter = 0
