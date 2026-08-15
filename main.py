@@ -1,6 +1,7 @@
 import neopixel
 import machine
 import time
+from machine import Timer
 from Weather.weatherLighting import WeatherLighting
 from Server import Server
 from OTA.OTAService import GitHubOTAUpdater
