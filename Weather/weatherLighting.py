@@ -1,5 +1,5 @@
-from VanIsle.DataModels.weatherEnum import Weather
-from VanIsle.API.weatherAPI import WeatherAPI
+from DataModels.weatherEnum import Weather
+from API.weatherAPI import WeatherAPI
 from machine import Timer
 import random
 import time
