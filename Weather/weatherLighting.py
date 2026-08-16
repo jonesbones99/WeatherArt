@@ -29,8 +29,8 @@ class WeatherLighting:
   
   def UpdateWeather(self):
     global WeatherService, CurrentWeather
-    CurrentWeather = Weather.HOT
-    print("[WeatherLighting] Upadting Weather from API")
+    CurrentWeather = WeatherService.GetWeather()
+    print("[WeatherLighting] Updating Weather from API" + str(CurrentWeather))
     return
 
   def GetLightPattern(self):
