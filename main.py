@@ -9,7 +9,7 @@ from OTA.OTAService import GitHubOTAUpdater
 DataPin   = 0  # The GPIO pin used on the board 
 NumLED    = 30 # The number of LEDs in the light strip
 NeoLights = neopixel.NeoPixel(machine.Pin(DataPin), NumLED)
-Lighting  = WeatherLighting(30, "Victoria BC", 30)
+Lighting  = WeatherLighting(30, "Victoria, BC", 30)
 PrevArray = []
 ToggleStatus = True
 
