@@ -7,7 +7,7 @@
     "OTA/boot.py",
     "OTA/OTAService.py",
     "Weather/weatherLighting.py",
-    "API/WeatherAPI.py",
+    "API/weatherAPI.py",
     "version.json"
   ],
   "checksums": {
