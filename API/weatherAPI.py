@@ -1,4 +1,5 @@
 import urequests
+from urllib.parse import quote
 from DataModels.weatherEnum import Weather
 
 class WeatherAPI:
@@ -10,25 +11,14 @@ class WeatherAPI:
 
   def GetWeather(self):
     """
-    Fetches the current weather at the given location (city name)
+    Fetches the current weather at the given location (city name or latitude,longitude)
     and returns the weather as a Weather enum value.
     """
     try:
-      # Geocode the city name to get latitude and longitude
-      geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={self.Location}&count=1&language=en&format=json"
-      geo_response = urequests.get(geo_url)
-      geo_data = geo_response.json()
-      geo_response.close()
-      
-      if not geo_data.get("results"):
-        return Weather.UNKNOWN
-      
-      location_data = geo_data["results"][0]
-      latitude = location_data["latitude"]
-      longitude = location_data["longitude"]
-      
+      latitude, longitude = self._resolve_lat_lon()
+
       # Fetch current weather data
-      weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=weather_code,temperature_2m&timezone=auto"
+      weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={quote(str(latitude))}&longitude={quote(str(longitude))}&current=weather_code,temperature_2m&timezone=auto"
       weather_response = urequests.get(weather_url)
       weather_data = weather_response.json()
       weather_response.close()
@@ -42,6 +32,34 @@ class WeatherAPI:
     except Exception as e:
       print(f"Error fetching weather: {e}")
       return Weather.UNKNOWN
+
+  def _resolve_lat_lon(self):
+    location = str(self.Location).strip()
+
+    # Support a direct latitude/longitude pair such as "48.4359, -123.35155"
+    if location:
+      parts = [part.strip() for part in location.replace(";", ",").split(",")]
+      if len(parts) >= 2:
+        try:
+          latitude = float(parts[0])
+          longitude = float(parts[1])
+          return latitude, longitude
+        except ValueError:
+          pass
+
+    # Otherwise geocode the city name to get latitude and longitude.
+    # The location must be URL-encoded so spaces and commas are valid in query strings.
+    encoded_location = quote(location)
+    geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={encoded_location}&count=1&language=en&format=json"
+    geo_response = urequests.get(geo_url)
+    geo_data = geo_response.json()
+    geo_response.close()
+    
+    if not geo_data.get("results"):
+      raise ValueError("No weather location found")
+    
+    location_data = geo_data["results"][0]
+    return location_data["latitude"], location_data["longitude"]
   
   def _weather_code_to_enum(self, code, temperature):
     """
